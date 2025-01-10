@@ -1,0 +1,1 @@
+## Bu proje 23-24 Web API bütünleme sınavına göre tasarlanmıştır.
