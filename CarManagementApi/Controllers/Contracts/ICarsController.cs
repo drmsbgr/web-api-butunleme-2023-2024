@@ -6,6 +6,6 @@ public interface ICarsController
 {
     IQueryable<Car>? GetAllCars();
     IQueryable<Car>? GetAllCarsWithPagination(int pageNo, int pageSize);
-    void AddCars(Car[] cars);
+    void AddCars(CarDto[] cars);
     void UpdateCar(int id, Car data);
 }

@@ -9,9 +9,24 @@ public class CarsController(RepositoryContext context) : ICarsController
 {
     private readonly RepositoryContext _context = context;
 
-    public void AddCars(Car[] cars)
+    public void AddCars(CarDto[] cars)
     {
-        _context.Cars?.AddRange(cars);
+        var carList = new List<Car>();
+
+        foreach (var car in cars)
+        {
+            carList.Add(new Car()
+            {
+                Id = car.Id,
+                Brand = car.Brand,
+                Model = car.Model,
+                Year = car.Year,
+                Price = car.Price,
+                EngineId = car.EngineId,
+            });
+        }
+
+        _context.Cars?.AddRange(carList);
         _context.SaveChanges();
     }
 

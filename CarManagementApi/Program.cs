@@ -6,11 +6,21 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(o =>
+{
+    o.SwaggerDoc("v1", new()
+    {
+        Version = "v1",
+        Title = "Car Management API",
+        Contact = new()
+        {
+            Name = "Buğra DURMUŞ",
+            Email = "drmsbgr@gmail.com",
+        },
+    });
+});
 builder.Services.AddScoped<ICarsController, CarsController>();
 builder.Services.AddDbContext<RepositoryContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("sqlite")));
@@ -38,7 +48,7 @@ app.MapGet("api/cars/", (ICarsController carsController) =>
 .Produces<IQueryable<Car>>(StatusCodes.Status200OK)
 .Produces(StatusCodes.Status204NoContent);
 
-app.MapPost("api/cars", (ICarsController controller, Car[] datas) =>
+app.MapPost("api/cars", (ICarsController controller, CarDto[] datas) =>
 {
     controller.AddCars(datas);
 });
