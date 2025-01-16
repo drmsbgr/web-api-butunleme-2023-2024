@@ -1,3 +1,4 @@
+using AutoMapper;
 using CarManagementApi.Controllers.Contracts;
 using CarManagementApi.Entities;
 using CarManagementApi.Repositories;
@@ -5,9 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarManagementApi.Controllers;
 
-public class CarsController(RepositoryContext context) : ICarsController
+public class CarsController(RepositoryContext context, IMapper mapper) : ICarsController
 {
     private readonly RepositoryContext _context = context;
+    private readonly IMapper _mapper = mapper;
 
     public void AddCars(CarDto[] cars)
     {
@@ -15,24 +17,18 @@ public class CarsController(RepositoryContext context) : ICarsController
 
         foreach (var car in cars)
         {
-            carList.Add(new Car()
-            {
-                Id = car.Id,
-                Brand = car.Brand,
-                Model = car.Model,
-                Year = car.Year,
-                Price = car.Price,
-                EngineId = car.EngineId,
-            });
+            var carEntity = _mapper.Map<Car>(car);
+            carList.Add(carEntity);
         }
 
         _context.Cars?.AddRange(carList);
         _context.SaveChanges();
     }
 
-    public IQueryable<Car>? GetAllCars()
+    public List<CarDto>? GetAllCars()
     {
-        return _context.Cars?.Include(c => c.Engine).AsNoTracking();
+        var cars = _context.Cars?.Include(c => c.Engine).AsNoTracking().ToList();
+        return _mapper.Map<List<CarDto>>(cars);
     }
 
     public IQueryable<Car>? GetAllCarsWithPagination(int pageNo, int pageSize)
